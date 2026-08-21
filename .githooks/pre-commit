@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Commit gate: the suite must pass. Where the private style audit exists on
+# this machine, it runs too. Wire once per clone:
+#   git config core.hooksPath .githooks
+set -u
+cd "$(git rev-parse --show-toplevel)"
+python3 -m unittest discover -s tests || exit 1
+# Presence, not the execute bit: a missing bit once skipped the audit
+# silently, and a guard absent for a bad reason must not look like a guard
+# absent for a good one.
+AUDIT="$HOME/exemplars/exemplar-maker/precommit_audit.sh"
+if [ -f "$AUDIT" ]; then
+    bash "$AUDIT" "$PWD" || exit 1
+fi
+exit 0
