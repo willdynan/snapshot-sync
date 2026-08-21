@@ -1,5 +1,7 @@
 # snapshot-sync
 
+![tests](https://github.com/willdynan/snapshot-sync/actions/workflows/tests.yml/badge.svg)
+
 Internal dashboards die one of two deaths. Either every page load queries
 the upstream API — slow, rate-limited, billed — or the dashboard reads a
 half-written export and serves it as truth. The second death is worse
