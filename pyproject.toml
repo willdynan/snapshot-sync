@@ -1,0 +1,7 @@
+[project]
+name = "snapshot-sync"
+version = "0.1.0"
+description = "The snapshot seam: rate-limit-aware pull, atomic snapshot with a completeness marker written last, a read surface that refuses partial data."
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "Will Dynan", email = "williamdynan@gmail.com" }]
