@@ -1,8 +1,8 @@
 """The read surface. Trust nothing the marker does not vouch for.
 
-A run row is only served if its snapshot file exists and its line count matches
-the recorded item count; anything else is skipped and the reader falls back to
-the newest run that verifies. The run index is cached on runs.jsonl's
+The reader serves a run row only when its snapshot file exists and its line
+count matches the recorded item count. It skips anything else and falls back
+to the newest run that verifies. The run index caches on runs.jsonl's
 (mtime, size), so repeated reads cost nothing until a new run lands.
 """
 
