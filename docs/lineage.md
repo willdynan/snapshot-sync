@@ -10,8 +10,9 @@ description: Honest limits and provenance.
   modified-since filter, wasteful for large corpora.
 - The lockfile is per-machine. The production versions ran as scheduled
   single-instance jobs. A shared lock is a deployment concern.
-- The reader re-counts a snapshot's lines on access. Cheap at demo scale.
-  At production scale the count moved behind the cache.
+- The reader hashes each snapshot once and remembers it, leaning on the
+  write-once design. A store where snapshots can mutate needs a stronger
+  key than the run id.
 - The mock source has no auth. Credential handling stays out of scope on
   purpose. The seam is the point, and readers never hold source
   credentials at all.

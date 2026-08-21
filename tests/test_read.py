@@ -35,6 +35,29 @@ class RefusesUnvouched(unittest.TestCase):
             Path(tmp, marker["snapshot"]).unlink()
             self.assertIsNone(Reader(tmp).latest())
 
+    def test_corrupt_bytes_refused_even_with_a_matching_line_count(self):
+        # The regression an outside review earned: a hash nobody checks is
+        # decoration. Same line count, one byte different -> refuse, fall back.
+        with tempfile.TemporaryDirectory() as tmp:
+            run_sync(None, tmp, fetch=iter([{"id": i} for i in range(5)]))
+            damaged = run_sync(None, tmp, fetch=iter([{"id": 100}]))
+            snap = Path(tmp, damaged["snapshot"])
+            snap.write_bytes(snap.read_bytes().replace(b"100", b"999"))
+            reader = Reader(tmp)
+            row = reader.latest()
+            self.assertIsNotNone(row)
+            self.assertEqual(row["items"], 5, "must fall back past the corrupt run")
+
+    def test_marker_hash_matches_disk_bytes_on_this_platform(self):
+        # Pins the newline contract: the bytes hashed are the bytes written,
+        # on every OS. Windows once disagreed.
+        import hashlib
+        with tempfile.TemporaryDirectory() as tmp:
+            marker = run_sync(None, tmp, fetch=iter([{"id": 1}, {"id": 2}]))
+            body = Path(tmp, marker["snapshot"]).read_bytes()
+            self.assertEqual(hashlib.sha256(body).hexdigest(), marker["sha256"])
+            self.assertEqual(len(Reader(tmp).items()), 2)
+
 
 class Cache(unittest.TestCase):
     def test_run_index_cached_until_mtime_changes(self):

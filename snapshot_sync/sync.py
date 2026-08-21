@@ -42,7 +42,10 @@ def run_sync(source_url, data_dir, page_size: int = 50, fetch=None) -> dict:
         count = 0
         items = fetch if fetch is not None else fetch_all(source_url, page_size)
         try:
-            with open(tmp, "w", encoding="utf-8") as f:
+            # newline="" so the bytes on disk are the bytes we hashed: without
+            # it, Windows translates \n to \r\n on write and the recorded
+            # sha256 is a lie on one platform.
+            with open(tmp, "w", encoding="utf-8", newline="") as f:
                 for item in items:
                     line = json.dumps(item, separators=(",", ":")) + "\n"
                     f.write(line)

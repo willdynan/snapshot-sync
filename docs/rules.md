@@ -19,9 +19,11 @@ reader only trusts what a marker vouches for.
 ## Readers refuse what the marker does not vouch for (`tests/test_read.py`)
 
 An orphan snapshot with no marker is invisible. A marker whose file is
-missing gets skipped. A marker whose count disagrees with the file gets
-skipped, with fallback to the newest run that verifies. A partial snapshot
-is not mostly fresh data. It is a wrong answer with good timing.
+missing gets skipped. The line count is the cheap screen and the sha256
+over the file bytes is the verdict — a hash nobody checks is decoration,
+and an outside review of this repo proved it by finding exactly that.
+Anything that fails falls back to the newest run that verifies. A partial
+snapshot is not mostly fresh data. It is a wrong answer with good timing.
 
 ## Backoff belongs to the source (`tests/test_sync.py`)
 

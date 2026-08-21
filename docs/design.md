@@ -31,7 +31,7 @@ surface has, because nobody files a ticket about it.
                                         |
                                         v
                                     read.py  --> items(), data_age_seconds()
-                                 (verify count, fall back, cache)
+                                 (count + sha256, fall back, cache)
 ```
 
 One run produces two durable artifacts. The snapshot file holds one JSON
@@ -50,10 +50,10 @@ reader will ever consult. No cleanup step exists that correctness depends
 on.
 
 The reader walks `runs.jsonl` newest-first and serves the first row that
-verifies: the snapshot exists and its line count matches. Anything else
-gets skipped, with fallback to the newest run that checks out. Data age is
-a number the surface can display, because stale and labeled beats fresh
-and wrong.
+verifies: the snapshot exists, its line count matches, and its bytes hash
+to the recorded sha256. Anything else gets skipped, with fallback to the
+newest run that checks out. Data age is a number the surface can display,
+because stale and labeled beats fresh and wrong.
 
 ## Worked example
 
